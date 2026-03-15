@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pauliaus ir Aistytės svajonių namas</title>
+  <link rel="stylesheet" href="antras.css">
+
+  <style>
+    /* ⭐ Shooting stars layer */
+    .stars{
+      position:absolute;
+      inset:0;
+      overflow:hidden;
+    }
+
+    .star{
+      position:absolute;
+      top: var(--y);
+      left: -20%;
+      width: var(--len);
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255,255,255,.95), rgba(255,255,255,0));
+      filter: drop-shadow(0 0 10px rgba(255,255,255,.35));
+      opacity: 0;
+      transform: translateX(0) translateY(0) rotate(var(--rot));
+      animation: shoot var(--dur) linear forwards;
+    }
+
+    .star::before{
+      content:"";
+      position:absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.95);
+      box-shadow: 0 0 18px rgba(255,255,255,.6);
+    }
+
+    @keyframes shoot{
+      0%   { opacity: 0; transform: translateX(0) translateY(0) rotate(var(--rot)); }
+      8%   { opacity: 1; }
+      100% { opacity: 0; transform: translateX(140vw) translateY(55vh) rotate(var(--rot)); }
+    }
+
+    body[data-mode="day"] .stars{ display:none; }
+  </style>
+
+  <style>
+    :root{
+      --text:#0b1220;
+      --muted:#425466;
+
+      --accent:#0ea5e9;
+      --accent2:#22c55e;
+
+      --border: rgba(15,23,42,.12);
+      --shadow: 0 18px 45px rgba(15,23,42,.12);
+      --shadow2: 0 28px 80px rgba(15,23,42,.15);
+
+      --cardBg: rgba(255,255,255,.78);
+
+      --imgDim: 0;
+    }
+
+    body[data-mode="evening"]{
+      --text:#e9f0fa;
+      --muted:#a6b6c9;
+      --border: rgba(255,255,255,.14);
+
+      --cardBg: rgba(255,255,255,.06);
+      --imgDim: .34;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      line-height:1.55;
+      transition: background 1s ease, color .6s ease;
+      min-height: 100vh;
+    }
+
+    /* ☀️ DIENA */
+    body[data-mode="day"]{
+      background:
+        radial-gradient(circle at 80% 20%, #ffe066 0%, #ffd43b 15%, transparent 40%),
+        linear-gradient(180deg, #87ceeb 0%, #cceeff 100%);
+    }
+
+    /* 🌌 NAKTIS */
+    body[data-mode="evening"]{
+      background:
+        radial-gradient(2px 2px at 10% 20%, white, transparent),
+        radial-gradient(2px 2px at 30% 40%, white, transparent),
+        radial-gradient(2px 2px at 50% 10%, white, transparent),
+        radial-gradient(2px 2px at 70% 30%, white, transparent),
+        radial-gradient(2px 2px at 90% 50%, white, transparent),
+        radial-gradient(2px 2px at 20% 70%, white, transparent),
+        radial-gradient(2px 2px at 60% 80%, white, transparent),
+        radial-gradient(2px 2px at 80% 15%, white, transparent),
+        radial-gradient(circle at 80% 20%, #aaa 0%, #666 20%, transparent 40%),
+        linear-gradient(180deg, #050510 0%, #0a0a1f 100%);
+    }
+
+    body::before{
+      content:"";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,.10), transparent 40%),
+        radial-gradient(1px 1px at 70% 60%, rgba(255,255,255,.08), transparent 40%),
+        radial-gradient(1px 1px at 40% 80%, rgba(255,255,255,.07), transparent 40%);
+      opacity: .30;
+      mix-blend-mode: overlay;
+      filter: blur(.2px);
+      z-index: 0;
+    }
+
+    body[data-mode="evening"]::before{ opacity: .20; }
+
+    .container{ width:min(1150px, 92vw); margin:0 auto; }
+
+    header{
+      position: sticky;
+      top:0;
+      z-index:10;
+      backdrop-filter: blur(10px);
+      background: rgba(246,248,251,.70);
+      border-bottom:1px solid var(--border);
+      transition: background .6s ease, border-color .6s ease;
+    }
+
+    body[data-mode="evening"] header{ background: rgba(10,15,22,.55); }
+
+    .nav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 0;
+      gap:12px;
+      flex-wrap: wrap;
+    }
+
+    /* tavo nuotraukų klasės paliktos, bet sutvarkytos */
+    .fotke,
+    .fotke2,
+    .fotke3,
+    .fotke4,
+    .fotke5{
+      width: 100%;
+      height:min(560px, 65vw);
+      object-fit:cover;
+      display:block;
+      animation: slowZoom 5s ease-in-out infinite alternate;
+      filter: contrast(1.08) saturate(1.05);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:900;
+      letter-spacing:-0.3px;
+    }
+
+    .logo{
+      width:38px;
+      height:38px;
+      border-radius:14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: var(--shadow);
+    }
+
+    .btn{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.85);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:800;
+      box-shadow: 0 8px 18px rgba(15,23,42,.06);
+      transition: transform .15s ease, background .6s ease, color .6s ease, border-color .6s ease;
+    }
+
+    body[data-mode="evening"] .btn{ background: rgba(255,255,255,.08); }
+    .btn:hover{ transform: translateY(-1px); }
+
+    .btn.primary{
+      border:none;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color:#06202a;
+    }
+
+    .hero{
+      padding: 34px 0 18px;
+      display:grid;
+      gap:14px;
+      position:relative;
+      z-index:1;
+    }
+
+    .tag{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:8px 10px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      color:var(--muted);
+      font-weight:900;
+      font-size: 13px;
+      background: rgba(20, 184, 221, 0.408);
+      width: fit-content;
+      transition: background .6s ease, border-color .6s ease, color .6s ease;
+      font-family: 'Times New Roman', Times, serif;
+    }
+
+    body[data-mode="evening"] .tag{ background: rgba(255,255,255,.07); }
+
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+    }
+
+    h1{
+      margin:10px 0 0;
+      font-style: italic;
+      font-size:clamp(30px,4.2vw,52px);
+      line-height:1.02;
+      letter-spacing: -0.8px;
+      text-align: center;
+      border-radius:999px;
+      color:var(--muted);
+    }
+
+    .price{
+      margin:10px 0 0;
+      font-size: clamp(18px, 2.2vw, 26px);
+      font-weight: 900;
+      color: var(--muted);
+      font-family:'Times New Roman', Times, serif;
+    }
+
+    .lead{
+      margin:8px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 85ch;
+    }
+
+    .sceneCard{
+      border:1px solid var(--border);
+      border-radius: 28px;
+      background: var(--cardBg);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      transition: background .6s ease, border-color .6s ease;
+    }
+
+    .imgWrap{
+      position:relative;
+      overflow:hidden;
+    }
+
+    .heroImage{
+      width:100%;
+      height:min(560px, 65vw);
+      object-fit:cover;
+      display:block;
+      animation: slowZoom 5s ease-in-out infinite alternate;
+      filter: contrast(1.08) saturate(1.05);
+    }
+
+    .overlay{
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(900px 420px at 30% 30%, rgba(255,255,255,.18), transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,.00), rgba(0,0,0,.20));
+      pointer-events:none;
+    }
+
+    .dim{
+      position:absolute;
+      inset:0;
+      background: rgba(0,0,0,var(--imgDim));
+      pointer-events:none;
+      transition: background .6s ease;
+    }
+
+    @keyframes slowZoom{
+      from { transform: scale(1.02); }
+      to   { transform: scale(1.08); }
+    }
+
+    .specBar{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:12px;
+      padding: 14px 16px;
+      border-top:1px solid var(--border);
+      background:none;
+      transition: background .6s ease, border-color .6s ease;
+    }
+
+    body[data-mode="evening"] .specBar{ background: rgba(255,255,255,.04); }
+
+    .spec{
+      border:1px solid var(--border);
+      background: rgb(251, 237, 220);
+      border-radius: 18px;
+      padding: 12px;
+      transition: background .6s ease, border-color .6s ease;
+    }
+
+    body[data-mode="evening"] .spec{ background: rgba(255,255,255,.05); }
+
+    .spec b{ display:block; font-size: 16px; }
+    .spec span{ color: var(--muted); font-size: 12px; display:block; margin-top:3px; }
+
+    section{
+      padding: 18px 0 22px;
+      position:relative;
+      z-index:1;
+    }
+
+    .coupleCard{
+      border:1px solid var(--border);
+      border-radius: 22px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+      display:flex;
+      gap:14px;
+      align-items:center;
+      flex-wrap:wrap;
+      transition: background .6s ease, border-color .6s ease;
+      background: var(--cardBg);
+    }
+
+    .couplePic{
+      width: 96px;
+      height: 96px;
+      border-radius: 18px;
+      object-fit: cover;
+      border: 1px solid var(--border);
+    }
+
+    .coupleText b{ display:block; font-size: 16px; }
+    .coupleText span{ color: var(--muted); font-size: 13px; }
+
+    .msgCard{
+      border:1px solid var(--border);
+      border-radius: 22px;
+      background: var(--cardBg);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      transition: background .6s ease, border-color .6s ease;
+    }
+
+    .msgRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .msg{
+      margin:0;
+      color: var(--muted);
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .toast{
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 18px;
+      background: rgba(15,23,42,.90);
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: var(--shadow);
+      display:none;
+      max-width: min(620px, 92vw);
+      font-weight: 850;
+      z-index: 9999;
+    }
+
+    footer{
+      padding: 18px 0 34px;
+      color: var(--muted);
+      position:relative;
+      z-index:1;
+    }
+
+    .divider{
+      height:1px;
+      background: var(--border);
+      margin: 12px 0;
+    }
+
+    @media (max-width: 920px){
+      .specBar{ grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 640px){
+      .nav{
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .msgRow{
+        align-items:flex-start;
+      }
+
+      h1{
+        text-align: left;
+      }
+    }
+
+    .sky{
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .moon{
+      position: absolute;
+      top: 80px;
+      right: 120px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff, #bbb);
+      box-shadow:
+        0 0 40px rgba(255,255,255,.6),
+        0 0 90px rgba(255,255,255,.35);
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    body[data-mode="evening"] .moon{ opacity: 1; }
+  </style>
+</head>
+
+<body data-mode="evening">
+
+  <div class="sky">
+    <div class="moon"></div>
+    <div class="stars" id="stars"></div>
+  </div>
+
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>Pauliaus ir Aistytės svajonių namas</div>
+      </div>
+
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <button class="btn" id="toggleMode">Perjungti diena / vakaras</button>
+        <button class="btn primary" id="copyMsg">Spausk!</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="hero">
+      <div>
+        <span class="tag"><span class="dot"></span> 1 Aukštas • Modernus • Tamsus fasadas • Vitrininiai langai • Baseinas</span>
+        <h1>Aistyte?❤️</h1>
+        <div class="price">Kaina: 199 999 EUR💎</div>
+        <p class="lead"></p>
+      </div>
+
+      <div class="sceneCard">
+        <div class="imgWrap">
+          <img class="heroImage" src="namas.jpg" alt="Modernus tamsus namas">
+          <img class="fotke" src="home.jpg" alt="Namo vaizdas">
+          <img class="fotke2" src="virtuve.jpg" alt="Virtuvė">
+          <img class="fotke3" src="salionas.jpg" alt="Salionas">
+          <img class="fotke4" src="dusas.jpg" alt="Dušas">
+          <img class="fotke5" src="baseinas.jpg" alt="Baseinas">
+          <div class="overlay"></div>
+          <div class="dim"></div>
+        </div>
+
+        <div class="specBar">
+          <div class="spec"><b>~130 m²</b><span>L formos planas</span></div>
+          <div class="spec"><b>4 kambariai</b><span>Privati + bendra zona</span></div>
+          <div class="spec"><b>Vitrininiai langai</b><span>Daug natūralios šviesos</span></div>
+          <div class="spec"><b>Baseinas</b><span>Mokinsimės plaukti</span></div>
+        </div>
+      </div>
+
+      <section>
+        <div class="coupleCard">
+          <img class="couplePic" src="mes.jpg" alt="Paulius ir Aistytė">
+          <div class="coupleText">
+            <b>Paulius & Aistytė</b>
+            <span>❤️❤️❤️❤️❤️❤️❤️</span>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="msgCard">
+          <div class="msgRow">
+            <p class="msg" id="msg">Pasirinkimai ➡️➡️➡️➡️➡️➡️➡️</p>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn" id="likeBtn">Pirkti grynais! 💵</button>
+              <button class="btn" id="nieko">Surprise!🎁</button>
+              <button class="btn" id="nieko1">Plaukimo pamoka 🏊‍♀️</button>
+              <button class="btn" id="dislikeBtn">Paskola!💰</button>
+              <button class="btn" id="scrollTop">Į viršų 🚀</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <div class="divider"></div>
+        © <span id="year"></span> Mano ir Aistytės svajonių namas.
+      </footer>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    $("year").innerText = new Date().getFullYear();
+
+    const toast = $("toast");
+    let timer = null;
+
+    function showToast(text){
+      toast.innerText = text;
+      toast.style.display = "block";
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        toast.style.display = "none";
+      }, 3500);
+    }
+
+    const starsWrap = $("stars");
+    let starTimer = null;
+
+    function rand(min, max){
+      return Math.random() * (max - min) + min;
+    }
+
+    function spawnStar(){
+      if (document.body.getAttribute("data-mode") !== "evening") return;
+
+      const star = document.createElement("div");
+      star.className = "star";
+
+      const y = rand(6, 45);
+      const len = rand(120, 220);
+      const dur = rand(1.6, 2.8);
+      const rot = rand(-35, -18) + "deg";
+
+      star.style.setProperty("--y", y + "vh");
+      star.style.setProperty("--len", len + "px");
+      star.style.setProperty("--dur", dur + "s");
+      star.style.setProperty("--rot", rot);
+
+      starsWrap.appendChild(star);
+      setTimeout(() => star.remove(), (dur + 0.2) * 1000);
+    }
+
+    function stopStars(){
+      if (starTimer){
+        clearInterval(starTimer);
+        starTimer = null;
+      }
+      if (starsWrap) starsWrap.innerHTML = "";
+    }
+
+    function startStars(){
+      stopStars();
+      spawnStar();
+
+      const run = () => {
+        if (document.body.getAttribute("data-mode") !== "evening") return;
+        spawnStar();
+        if (Math.random() < 0.35){
+          setTimeout(() => {
+            if (document.body.getAttribute("data-mode") === "evening") {
+              spawnStar();
+            }
+          }, rand(120, 520));
+        }
+      };
+
+      run();
+      starTimer = setInterval(run, 2200);
+    }
+
+    if (document.body.getAttribute("data-mode") === "evening"){
+      startStars();
+    }
+
+    $("toggleMode").addEventListener("click", () => {
+      const body = document.body;
+      const next = body.getAttribute("data-mode") === "day" ? "evening" : "day";
+      body.setAttribute("data-mode", next);
+
+      if (next === "evening"){
+        startStars();
+      } else {
+        stopStars();
+      }
+
+      showToast(next === "evening" ? "🌙 Vakaro režimas" : "☀️ Dienos režimas");
+    });
+
+    async function copyText(text){
+      if (navigator.clipboard && window.isSecureContext){
+        return navigator.clipboard.writeText(text);
+      }
+
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      return Promise.resolve();
+    }
+
+    $("copyMsg").addEventListener("click", async () => {
+      try{
+        await copyText($("msg").innerText.trim());
+        showToast("📋 Žinutė nukopijuota");
+      } catch (e){
+        showToast("Nepavyko nukopijuoti");
+      }
+    });
+
+    $("likeBtn").addEventListener("click", () => showToast("😂😂😂😂"));
+    $("dislikeBtn").addEventListener("click", () => showToast("❌ Deja, bankas atsisakė jums duoti paskolą 😔"));
+    $("scrollTop").addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+    $("nieko").addEventListener("click", () => {
+      window.location.href = "https://www.youtube.com/watch?v=OMOGaugKpzs&list=RDOMOGaugKpzs&start_radio=1";
+    });
+
+    $("nieko1").addEventListener("click", () => {
+      window.location.href = "https://www.youtube.com/watch?v=Bu8bH2P37kY";
+    });
+  </script>
+
+</body>
+</html>
